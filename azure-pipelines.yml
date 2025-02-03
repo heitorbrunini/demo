@@ -1,8 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master  # A pipeline será acionada em commits na branch master
 
@@ -10,11 +5,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-# Configurar o Java e Maven
-- task: UseJavaVersion@1
-  inputs:
-    versionSpec: '21'  # Defina a versão do Java conforme necessário
-    jdkArchitecture: 'x64'
+# Instalar Java 21 manualmente
+- script: |
+    sudo apt update
+    sudo apt install -y openjdk-21-jdk
+    java -version
+  displayName: 'Instalar Java 21'
 
 # Executar Maven clean package
 - script: |
