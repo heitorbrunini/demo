@@ -14,6 +14,7 @@ steps:
 
 # Executar Maven clean package
 - script: |
+    cd demo
     mvn clean package
   displayName: 'Build com Maven'
 
@@ -25,7 +26,7 @@ steps:
 
 # Adicionar os arquivos gerados no target/ ao controle de versão
 - script: |
-    git add target/*
+    git add .
     git commit -m "Commit automático: arquivos gerados pelo Maven"
   displayName: 'Commit dos arquivos gerados'
 
