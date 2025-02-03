@@ -1,0 +1,42 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master  # A pipeline será acionada em commits na branch master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# Configurar o Java e Maven
+- task: UseJavaVersion@1
+  inputs:
+    versionSpec: '21'  # Defina a versão do Java conforme necessário
+    jdkArchitecture: 'x64'
+
+# Executar Maven clean package
+- script: |
+    mvn clean package
+  displayName: 'Build com Maven'
+
+# Configurar Git com suas credenciais
+- script: |
+    git config --global user.email "heitorbrunini.ifpb@gmail.com"
+    git config --global user.name "heitorbrunini"
+  displayName: 'Configurar Git'
+
+# Adicionar os arquivos gerados no target/ ao controle de versão
+- script: |
+    git add target/*
+    git commit -m "Commit automático: arquivos gerados pelo Maven"
+  displayName: 'Commit dos arquivos gerados'
+
+# Fazer push das mudanças para o repositório
+- script: |
+    git remote set-url origin https://$(GITHUB_PAT)@github.com/seu-usuario/seu-repositorio.git
+    git push origin master
+  displayName: 'Push dos arquivos para o repositório'
+  env:
+    GITHUB_PAT: $(GITHUB_PAT)
