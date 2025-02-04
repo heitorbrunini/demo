@@ -12,8 +12,16 @@ steps:
     sudo update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
   displayName: 'Instalar e definir Java 21 como padrão'
 
+- script: |
+    echo "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" | sudo tee -a /etc/environment
+    export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    echo $JAVA_HOME
+    java -version
+    
+
 # Verificar se Java e Maven estão configurados corretamente
 - script: |
+    echo $JAVA_HOME
     java -version
     mvn -version
     printenv
