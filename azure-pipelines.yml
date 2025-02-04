@@ -5,30 +5,35 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-
 - script: |
     sudo apt update
     sudo apt install -y openjdk-21-jdk
     sudo update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
     
-    echo "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" | sudo tee -a /etc/environment
+    # Definir JAVA_HOME e adicionar ao PATH
     export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-    echo $JAVA_HOME
-    java -version
-    printenv
-  displayName: 'Instalar e definir Java 21 como padrão'
+    export PATH=$JAVA_HOME/bin:$PATH
+    echo "JAVA_HOME is set to: $JAVA_HOME"
 
-# Verificar se Java e Maven estão configurados corretamente
-- script: |
-    echo $JAVA_HOME
+    # Persistir a configuração do JAVA_HOME no sistema
+    echo "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" | sudo tee -a /etc/environment
+    
+    # Verificar se o Java está corretamente instalado
     java -version
-    mvn -version
-    printenv
-  displayName: 'Verificar versão do Java e Maven'
-  
+  displayName: 'Instalar e definir Java 21 como padrão'
 
 # Executar Maven clean package
 - script: |
+    # Garantir que JAVA_HOME e PATH estejam corretos
+    export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    export PATH=$JAVA_HOME/bin:$PATH
+    echo "Using JAVA_HOME: $JAVA_HOME"
+
+    # Verificar a versão do Java e do Maven antes da compilação
+    java -version
+    mvn -version
+
+    # Executar o build
     cd demo
     mvn clean package
   displayName: 'Build com Maven'
