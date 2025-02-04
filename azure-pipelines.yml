@@ -16,6 +16,7 @@ steps:
 - script: |
     java -version
     mvn -version
+    printenv
   displayName: 'Verificar versão do Java e Maven'
   
 
