@@ -5,13 +5,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-# Instalar Java 21 manualmente e garantir que seja o padrão
-- script: |
-    sudo apt update
-    sudo apt install -y openjdk-21-jdk
-    sudo update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
-    java -version
-  displayName: 'Instalar e definir Java 21 como padrão'
 
 # Verificar se Java e Maven estão configurados corretamente
 - script: |
@@ -25,20 +18,6 @@ steps:
     cd demo
     mvn clean package
   displayName: 'Build com Maven'
-# Build com Maven
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'Path'
-    jdkVersionOption: '1.21'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
-  env:
-    JAVA_HOME: /usr/lib/jvm/java-21-openjdk-amd64
-
 
 # Configurar Git com suas credenciais
 - script: |
