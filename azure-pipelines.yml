@@ -1,0 +1,61 @@
+trigger:
+- master  # A pipeline será acionada em commits na branch master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# Instalar Java 21 manualmente e garantir que seja o padrão
+- script: |
+    sudo apt update
+    sudo apt install -y openjdk-21-jdk
+    sudo update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
+    java -version
+  displayName: 'Instalar e definir Java 21 como padrão'
+
+# Verificar se Java e Maven estão configurados corretamente
+- script: |
+    java -version
+    mvn -version
+  displayName: 'Verificar versão do Java e Maven'
+  
+
+# Executar Maven clean package
+- script: |
+    cd demo
+    mvn clean package
+  displayName: 'Build com Maven'
+# Build com Maven
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'Path'
+    jdkVersionOption: '1.21'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+  env:
+    JAVA_HOME: /usr/lib/jvm/java-21-openjdk-amd64
+
+
+# Configurar Git com suas credenciais
+- script: |
+    git config --global user.email "heitorbrunini.ifpb@gmail.com"
+    git config --global user.name "heitorbrunini"
+  displayName: 'Configurar Git'
+
+# Adicionar os arquivos gerados no target/ ao controle de versão
+- script: |
+    git add .
+    git diff --staged --quiet || git commit -m "Commit automático: arquivos gerados pelo Maven"
+  displayName: 'Commit dos arquivos gerados'
+
+# Fazer push das mudanças para o repositório
+- script: |
+    git remote set-url origin https://$(GITHUB_PAT)@github.com/heitorbrunini/demo
+    git push origin master
+  displayName: 'Push dos arquivos para o repositório'
+  env:
+    GITHUB_PAT: $(GITHUB_PAT)
