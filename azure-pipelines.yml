@@ -52,8 +52,8 @@ steps:
 
 # Fazer push das mudanças para o repositório
 - script: |
-    git remote set-url origin https://$(GITHUB_PAT)@github.com/heitorbrunini/demo
-    git push
+    git remote set-url https://$(GITHUB_PAT)@github.com/heitorbrunini/demo
+    git push -u origin master
   displayName: 'Push dos arquivos para o repositório'
   env:
     GITHUB_PAT: $(GITHUB_PAT)
