@@ -44,11 +44,13 @@ steps:
     git config --global user.name "heitorbrunini"
   displayName: 'Configurar Git'
 
-# Adicionar os arquivos gerados no target/ ao controle de versão
+# Garantir que há mudanças antes do commit
 - script: |
-    git add .
-    git commit -m "Commit automático: arquivos gerados pelo Maven"
-  displayName: 'Commit dos arquivos gerados'
+    [[ $(git status --porcelain) ]] || { echo "No changes, exiting now..."; exit 0; }
+    echo "Changes detected, let's commit them!"
+    git add -A
+    git commit -m "feat: Update pipeline history from Azure Pipelines [skip ci]"
+  displayName: 'Commit das mudanças'
 
 
 - bash: |
