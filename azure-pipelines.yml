@@ -44,13 +44,23 @@ steps:
     git config --global user.name "heitorbrunini"
   displayName: 'Configurar Git'
 
+# Configurar Git com suas credenciais
+- script: |
+    git status
+  displayName: 'verificar o status dos arquivos'
+
 # Garantir que há mudanças antes do commit
 - script: |
     [[ $(git status --porcelain) ]] || { echo "No changes, exiting now..."; exit 0; }
     echo "Changes detected, let's commit them!"
-    git add -A
+    git add .
     git commit -m "feat: Update pipeline history from Azure Pipelines [skip ci]"
   displayName: 'Commit das mudanças'
+
+# Configurar Git com suas credenciais
+- script: |
+    git status
+  displayName: 'verificar o status dos arquivos'
 
 
 - bash: |
