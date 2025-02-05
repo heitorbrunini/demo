@@ -47,14 +47,13 @@ steps:
 # Adicionar os arquivos gerados no target/ ao controle de versão
 - script: |
     git add .
-    git diff --staged --quiet || git commit -m "Commit automático: arquivos gerados pelo Maven"
+    git commit -m "Commit automático: arquivos gerados pelo Maven"
   displayName: 'Commit dos arquivos gerados'
 
 
-- script: |
+- bash: |
     git remote set-url origin https://$(GITHUB_PAT)@github.com/heitorbrunini/demo.git
-    git branch -M master
-    git push
+    git push origin "HEAD:master"
   displayName: 'Push dos arquivos para o repositório'
   env:
     GITHUB_PAT: $(GITHUB_PAT)
